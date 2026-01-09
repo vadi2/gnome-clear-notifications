@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.clear-notifications"
+          path="/org/gnome/shell/extensions/clear-notifications/">
+
+    <key type="as" name="clear-all">
+      <default><![CDATA[['<Shift><Super>c']]]></default>
+      <summary>Clear All Notifications</summary>
+      <description>Keyboard shortcut to clear all notifications</description>
+    </key>
+
+    <key type="b" name="show-indicator">
+      <default>true</default>
+      <summary>Show Panel Indicator</summary>
+      <description>Show the clear notifications button in the top panel</description>
+    </key>
+
+  </schema>
+</schemalist>
