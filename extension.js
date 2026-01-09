@@ -66,11 +66,11 @@ export default class ClearNotificationsExtension extends Extension {
         }
 
         const children = notificationSection._list.get_children();
-        children.forEach(notification => {
+        children.forEach(listItem => {
             try {
-                notification.destroy();
+                listItem.child.close();
             } catch (e) {
-                console.warn(`[Clear Notifications] Failed to destroy notification: ${e.message}`);
+                console.warn(`[Clear Notifications] Failed to close notification: ${e.message}`);
             }
         });
     }
