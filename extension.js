@@ -36,6 +36,23 @@ export default class ClearNotificationsExtension extends Extension {
     }
 
     _clearNotifications() {
+        // Clear popup banner if one is showing
+        const messageTray = Main.messageTray;
+        if (messageTray._banner) {
+            try {
+                messageTray._banner.ease({
+                    opacity: 0,
+                    duration: 100,
+                    onComplete: () => {
+                        messageTray._hideBanner();
+                    },
+                });
+            } catch (e) {
+                console.warn(`[Clear Notifications] Failed to hide banner: ${e.message}`);
+            }
+        }
+
+        // Clear notification list
         const messageList = this._getMessageList();
         if (!messageList) {
             console.warn('[Clear Notifications] Cannot clear - notification API unavailable');
