@@ -20,9 +20,18 @@ class ClearNotificationsIndicator extends PanelMenu.Button {
         this.add_child(this._icon);
 
         this.connect('button-press-event', () => {
-            this._extension._clearNotifications();
+            try {
+                this._extension._clearNotifications();
+            } catch (e) {
+                console.error(`[Clear Notifications] Error clearing: ${e.message}`);
+            }
             return true;
         });
+    }
+
+    _onDestroy() {
+        this._extension = null;
+        super._onDestroy?.();
     }
 });
 
@@ -79,46 +88,60 @@ export default class ClearNotificationsExtension extends Extension {
             Meta.KeyBindingFlags.NONE,
             Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
             () => {
-                this._clearNotifications();
+                try {
+                    this._clearNotifications();
+                } catch (e) {
+                    console.error(`[Clear Notifications] Error in keybinding: ${e.message}`);
+                }
             }
         );
     }
 
     _connectNotificationSignals() {
         const messageList = this._getMessageList();
-        if (!messageList)
+        if (!messageList) {
+            console.warn('[Clear Notifications] _messageList not found - indicator visibility updates disabled');
             return;
+        }
 
         const notificationSection = messageList._notificationSection;
-        if (!notificationSection || !notificationSection._list)
+        if (!notificationSection || !notificationSection._list) {
+            console.warn('[Clear Notifications] _notificationSection not found - indicator visibility updates disabled');
             return;
+        }
 
-        this._actorAddedId = notificationSection._list.connect('actor-added', () => {
+        this._notificationList = notificationSection._list;
+
+        this._actorAddedId = this._notificationList.connect('actor-added', () => {
             this._updateVisibility();
         });
 
-        this._actorRemovedId = notificationSection._list.connect('actor-removed', () => {
+        this._actorRemovedId = this._notificationList.connect('actor-removed', () => {
             this._updateVisibility();
         });
     }
 
     _disconnectNotificationSignals() {
-        const messageList = this._getMessageList();
-        if (!messageList)
-            return;
+        if (this._notificationList) {
+            if (this._actorAddedId) {
+                try {
+                    this._notificationList.disconnect(this._actorAddedId);
+                } catch (e) {
+                    console.warn(`[Clear Notifications] Failed to disconnect signal: ${e.message}`);
+                }
+                this._actorAddedId = null;
+            }
 
-        const notificationSection = messageList._notificationSection;
-        if (!notificationSection || !notificationSection._list)
-            return;
+            if (this._actorRemovedId) {
+                try {
+                    this._notificationList.disconnect(this._actorRemovedId);
+                } catch (e) {
+                    console.warn(`[Clear Notifications] Failed to disconnect signal: ${e.message}`);
+                }
+                this._actorRemovedId = null;
+            }
 
-        if (this._actorAddedId) {
-            notificationSection._list.disconnect(this._actorAddedId);
-            this._actorAddedId = null;
-        }
-
-        if (this._actorRemovedId) {
-            notificationSection._list.disconnect(this._actorRemovedId);
-            this._actorRemovedId = null;
+            this._notificationList = null;
         }
     }
 
@@ -148,16 +171,24 @@ export default class ClearNotificationsExtension extends Extension {
 
     _clearNotifications() {
         const messageList = this._getMessageList();
-        if (!messageList)
+        if (!messageList) {
+            console.warn('[Clear Notifications] Cannot clear - notification API unavailable');
             return;
+        }
 
         const notificationSection = messageList._notificationSection;
-        if (!notificationSection || !notificationSection._list)
+        if (!notificationSection || !notificationSection._list) {
+            console.warn('[Clear Notifications] Cannot clear - notification section unavailable');
             return;
+        }
 
         const children = notificationSection._list.get_children();
         children.forEach(notification => {
-            notification.destroy();
+            try {
+                notification.destroy();
+            } catch (e) {
+                console.warn(`[Clear Notifications] Failed to destroy notification: ${e.message}`);
+            }
         });
 
         this._updateVisibility();
