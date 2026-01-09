@@ -9,11 +9,5 @@
       <description>Keyboard shortcut to clear all notifications</description>
     </key>
 
-    <key type="b" name="show-indicator">
-      <default>true</default>
-      <summary>Show Panel Indicator</summary>
-      <description>Show the clear notifications button in the top panel</description>
-    </key>
-
   </schema>
 </schemalist>
