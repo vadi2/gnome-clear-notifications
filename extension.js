@@ -86,7 +86,7 @@ export default class ClearNotificationsExtension extends Extension {
             'clear-all',
             this._settings,
             Meta.KeyBindingFlags.NONE,
-            Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
+            Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW | Shell.ActionMode.POPUP,
             () => {
                 try {
                     this._clearNotifications();
