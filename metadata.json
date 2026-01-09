@@ -1,7 +1,7 @@
 {
   "uuid": "clear-notifications@vadimperetok.in",
   "name": "Clear Notifications",
-  "description": "Adds a button and keyboard shortcut (Shift+Super+C) to clear all notifications",
+  "description": "Adds a keyboard shortcut (Shift+Super+C) to clear all notifications",
   "shell-version": ["45", "46", "47", "48"],
   "version": 1,
   "url": "https://github.com/vadi2/gnome-clear-notifications",
