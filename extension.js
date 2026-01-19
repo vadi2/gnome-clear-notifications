@@ -27,7 +27,7 @@ export default class ClearNotificationsExtension extends Extension {
                 } catch (e) {
                     console.error(`[Clear Notifications] Error in keybinding: ${e.message}`);
                 }
-            }
+            },
         );
     }
 
