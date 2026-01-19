@@ -1,0 +1,29 @@
+name: Validate Extension
+
+on: [push, pull_request]
+
+jobs:
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ESLint
+        run: npm install eslint@8.57.0 -g
+      - name: Run ESLint
+        run: eslint . --ext .js
+
+  pack:
+    name: Validate Extension Pack
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install GNOME Shell
+        run: sudo apt-get update && sudo apt-get install -y gnome-shell
+      - name: Validate extension structure
+        run: gnome-extensions pack --force --out-dir=_build
+      - name: Upload extension artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-zip
+          path: _build/*.zip
