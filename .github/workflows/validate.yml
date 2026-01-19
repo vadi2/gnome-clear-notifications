@@ -19,9 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install GNOME Shell
-        run: sudo apt-get update && sudo apt-get install -y gnome-shell
+        run: sudo apt-get update && sudo apt-get install -y gnome-shell xvfb dbus-x11
       - name: Validate extension structure
-        run: gnome-extensions pack --force --out-dir=_build
+        run: xvfb-run -a dbus-run-session gnome-extensions pack --force --out-dir=_build
       - name: Upload extension artifact
         uses: actions/upload-artifact@v4
         with:
