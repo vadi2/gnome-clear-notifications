@@ -21,13 +21,7 @@ export default class ClearNotificationsExtension extends Extension {
             this._settings,
             Meta.KeyBindingFlags.NONE,
             Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW | Shell.ActionMode.POPUP,
-            () => {
-                try {
-                    this._clearNotifications();
-                } catch (e) {
-                    console.error(`[Clear Notifications] Error in keybinding: ${e.message}`);
-                }
-            },
+            () => this._clearNotifications(),
         );
     }
 
@@ -66,12 +60,6 @@ export default class ClearNotificationsExtension extends Extension {
         }
 
         const children = notificationSection._list.get_children();
-        children.forEach(listItem => {
-            try {
-                listItem.child.close();
-            } catch (e) {
-                console.warn(`[Clear Notifications] Failed to close notification: ${e.message}`);
-            }
-        });
+        children.forEach(listItem => listItem.child.close());
     }
 }
